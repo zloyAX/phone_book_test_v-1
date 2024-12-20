@@ -131,16 +131,6 @@ def edit_contact():
             del telephone_book[first_char]
             add_contact()
 
-    # kei["Name"] = input("Enter new name: ").capitalize()
-    # kei["Phone"] = input("Enter new phone: ")
-    # kei["Photo"] = input("Enter new photo: ")
-
-    # for kei in telephone_book[first_char]:
-    #     if kei["Name"] == name:
-    #         kei["Name"] = input("Enter new name: ").capitalize()
-    #         kei["Phone"] = input("Enter new phone: ")
-    #         kei["Photo"] = input("Enter new photo: ")
-
 
 def del_contact():
     name = input("Delete contact\nEnter name: ").capitalize()
