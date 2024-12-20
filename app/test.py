@@ -1,5 +1,5 @@
 import os
-from sty import fg, rs
+from sty import fg, rs, bg
 from PIL import Image
 from colorit import background, init_colorit
 from art import text2art
@@ -8,43 +8,41 @@ init_colorit()
 
 telephone_book = {
     "a": [
-        # {
-        #     "Name": "Asd",
-        #     "Phone": "123",
-        #     "Photo": "app/boy.jpeg",
-        # },
+        {
+            "Name": "Asd",
+            "Phone": "123",
+            "Photo": "app/boy.jpeg",
+        },
         {
             "Name": "Att",
             "Phone": "123",
             "Photo": "app/boy.jpeg",
         },
     ],
-#     "i": [
-#         {
-#             "Name": "Ivan Ivanov",
-#             "Phone": "+79123456789",
-#             "Work Phone": "+74951234567",
-#             "Address": "Pushkina st., 10",
-#             "Email": "ivan.ivanov@example.com",
-#             "Date of Birth": "1985-03-15",
-#             "Notes": """Lorem Ipsum is simply dummy text.
-# Lorem Ipsum dummy text ever since the 1500s, when
-# """,
-#             "Photo": "app/girl.jpeg",
-#         },
-#     ],
-    # "p": [
-    #     {
-    #         "Name": "Petr Petrov",
-    #         "Phone": "+79876543210",
-    #         "Work Phone": "+78129876543",
-    #         "Address": "Lenina st., 5",
-    #         "Email": "petr.petrov@example.net",
-    #         "Date of Birth": "1992-11-20",
-    #         "Notes": "Colleague, does sports.",
-    #         "Photo": "app/dog.jpg",
-    #     },
-    # ],
+    "i": [
+        {
+            "Name": "Ivan Ivanov",
+            "Phone": "+79123456789",
+            "Work Phone": "+74951234567",
+            "Address": "Pushkina st., 10",
+            "Email": "ivan.ivanov@example.com",
+            "Date of Birth": "1985-03-15",
+            "Notes": "Lorem Ipsum is simply dummy text.",
+            "Photo": "app/girl.jpeg",
+        },
+    ],
+    "p": [
+        {
+            "Name": "Petr Petrov",
+            "Phone": "+79876543210",
+            "Work Phone": "+78129876543",
+            "Address": "Lenina st., 5",
+            "Email": "petr.petrov@example.net",
+            "Date of Birth": "1992-11-20",
+            "Notes": "Colleague, does sports.",
+            "Photo": "app/dog.jpg",
+        },
+    ],
 }
 
 
@@ -113,7 +111,7 @@ def show_contacts():
                 try:
                     print(
                         "\t" + user_key.__next__(),
-                        user_value.__next__().replace("\n", " "),
+                        user_value.__next__().replace("\n", ""),
                         sep=":",
                         end="",
                     )
@@ -129,9 +127,8 @@ def edit_contact():
 
     for kei in telephone_book[first_char]:
         if kei["Name"] == name:
-            print(len(telephone_book[first_char]))
-            if not len(telephone_book[first_char]):
-                del telephone_book[first_char]
+            del telephone_book[first_char][telephone_book[first_char].index(kei)]
+            del telephone_book[first_char]
             add_contact()
 
 
@@ -150,7 +147,6 @@ logo_menu()
 
 while True:
     action = input("Select action: ")
-
     if action == "1":
         os.system("cls" if os.name == "nt" else "clear")
         show_logo()
