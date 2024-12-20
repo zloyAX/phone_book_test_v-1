@@ -1,5 +1,5 @@
 import os
-from sty import fg, rs, bg
+from sty import fg, rs
 from PIL import Image
 from colorit import background, init_colorit
 from art import text2art
@@ -27,7 +27,9 @@ telephone_book = {
             "Address": "Pushkina st., 10",
             "Email": "ivan.ivanov@example.com",
             "Date of Birth": "1985-03-15",
-            "Notes": "Lorem Ipsum is simply dummy text. Lorem Ipsum dummy text ever since the 1500s, when ",
+            "Notes": """Lorem Ipsum is simply dummy text.
+Lorem Ipsum dummy text ever since the 1500s, when
+""",
             "Photo": "app/girl.jpeg",
         },
     ],
@@ -111,7 +113,7 @@ def show_contacts():
                 try:
                     print(
                         "\t" + user_key.__next__(),
-                        user_value.__next__(),
+                        user_value.__next__().replace("\n", " "),
                         sep=":",
                         end="",
                     )
@@ -147,6 +149,7 @@ logo_menu()
 
 while True:
     action = input("Select action: ")
+
     if action == "1":
         os.system("cls" if os.name == "nt" else "clear")
         show_logo()
