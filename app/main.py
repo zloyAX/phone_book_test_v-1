@@ -3,49 +3,13 @@ from sty import fg, rs
 from PIL import Image
 from colorit import background, init_colorit
 from art import text2art
+import json
+
 
 init_colorit()
 
-telephone_book = {
-    "a": [
-        # {
-        #     "Name": "Asd",
-        #     "Phone": "123",
-        #     "Photo": "app/boy.jpeg",
-        # },
-        {
-            "Name": "Att",
-            "Phone": "123",
-            "Photo": "app/boy.jpeg",
-        },
-    ],
-#     "i": [
-#         {
-#             "Name": "Ivan Ivanov",
-#             "Phone": "+79123456789",
-#             "Work Phone": "+74951234567",
-#             "Address": "Pushkina st., 10",
-#             "Email": "ivan.ivanov@example.com",
-#             "Date of Birth": "1985-03-15",
-#             "Notes": """Lorem Ipsum is simply dummy text.
-# Lorem Ipsum dummy text ever since the 1500s, when
-# """,
-#             "Photo": "app/girl.jpeg",
-#         },
-#     ],
-    # "p": [
-    #     {
-    #         "Name": "Petr Petrov",
-    #         "Phone": "+79876543210",
-    #         "Work Phone": "+78129876543",
-    #         "Address": "Lenina st., 5",
-    #         "Email": "petr.petrov@example.net",
-    #         "Date of Birth": "1992-11-20",
-    #         "Notes": "Colleague, does sports.",
-    #         "Photo": "app/dog.jpg",
-    #     },
-    # ],
-}
+with open("data.json", "r") as file:
+    telephone_book = json.load(file)
 
 
 def clear_scrin_logo_menu():
@@ -71,24 +35,8 @@ def show_menu():
     print("3. Edit contact")
     print(fg(248, 0, 18) + "4. Delete contact")
     print(fg(248, 0, 18) + "5. Clear contacts" + rs.all)
+    print("6. Save the list to a text file")
     print(fg(192, 244, 0) + "8. Exit" + rs.all)
-
-
-def add_contact():
-    name = input("Enter name: ").lower()
-    phone = input("Phone: ")
-    photo = input("Photo adress: ").replace("\\", "/")
-
-    first_char = name[0]
-
-    if first_char in telephone_book:
-        telephone_book[first_char].append(
-            {"Name": name.capitalize(), "Phone": phone, "Photo": photo}
-        )
-    else:
-        telephone_book.update(
-            {first_char: [{"Name": name.capitalize(), "Phone": phone, "Photo": photo}]}
-        )
 
 
 def show_contacts():
@@ -123,16 +71,41 @@ def show_contacts():
             print()
 
 
-def edit_contact():
-    name = input("Enter name: ").capitalize()
-    first_char = name[0].lower()
+def add_contact():
+    name = input("Enter name: ").lower()
+    phone = input("Phone: ")
+    photo = input("Photo adress: ")
 
-    for kei in telephone_book[first_char]:
-        if kei["Name"] == name:
-            print(len(telephone_book[first_char]))
+    first_char = name[0]
+
+    if first_char in telephone_book:
+        telephone_book[first_char].append(
+            {"Name": name.capitalize(), "Phone": phone, "Photo": photo}
+        )
+    else:
+        telephone_book.update(
+            {first_char: [{"Name": name.capitalize(), "Phone": phone, "Photo": photo}]}
+        )
+    with open("data.json", "w") as file:
+        json.dump(telephone_book, file)
+
+
+def edit_contact():
+    show_contacts()
+    try:
+        name = input("Enter name: ").capitalize()
+        first_char = name[0].lower()
+
+        for kei in telephone_book[first_char]:
+            if kei["Name"] == name:
+                del telephone_book[first_char][telephone_book[first_char].index(kei)]
+                add_contact()
             if not len(telephone_book[first_char]):
                 del telephone_book[first_char]
-            add_contact()
+        with open("data.json", "w") as file:
+            json.dump(telephone_book, file)
+    except KeyError:
+        print("Contact not found")
 
 
 def del_contact():
@@ -144,6 +117,21 @@ def del_contact():
             del telephone_book[first_char][telephone_book[first_char].index(kei)]
             if not len(telephone_book[first_char]):
                 del telephone_book[first_char]
+    with open("data.json", "w") as file:
+        json.dump(telephone_book, file)
+
+
+def save_to_file():
+    with open("contacts.txt", "w") as file:
+        sorted_book = dict(sorted(telephone_book.items()))
+
+        for key, value in sorted_book.items():
+            file.write(f"{key.upper()}\n")
+            for item in value:
+                for key, value in item.items():
+                    file.write(f"{key}: {value}\n")
+                file.write("--------------\n")
+            file.write("\n")
 
 
 logo_menu()
@@ -170,7 +158,14 @@ while True:
         clear_scrin_logo_menu()
     elif action == "5":
         telephone_book.clear()
+        with open("data.json", "w") as file:
+            json.dump(telephone_book, file)
         clear_scrin_logo_menu()
+        print("Contacts have been cleared")
+    elif action == "6":
+        clear_scrin_logo_menu()
+        save_to_file()
+        print("The list has been saved to a text file")
     elif action == "8":
         print("Exit the application")
         os.system("cls" if os.name == "nt" else "clear")
